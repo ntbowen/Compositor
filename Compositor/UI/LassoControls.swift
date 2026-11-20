@@ -14,7 +14,7 @@ struct LassoControls: View {
                             session.marqueeKind = kind
                         }),
                                                  options: LassoKind.marqueeChoices) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .help("Press M to switch between Rectangle and Ellipse")
                     }
@@ -24,7 +24,7 @@ struct LassoControls: View {
                             session.wandMode = mode
                         }),
                                                  options: WandMode.allCases) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .help("Press Tab to switch between Wand and Object")
                     }
@@ -34,7 +34,7 @@ struct LassoControls: View {
                             session.lassoKind = kind
                         }),
                                                  options: LassoKind.lassoChoices) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .help("Press L to switch between Freehand and Polygonal")
                     }
@@ -42,7 +42,7 @@ struct LassoControls: View {
                     CompositorSegmentedPicker("Mode", selection: Binding(get: { session.displayedSelectionMode },
                                                       set: { session.selectionModeChoice = $0 }),
                                              options: SelectionMode.allCases) {
-                        Text($0.rawValue)
+                        Text($0.localizedName)
                     }.fixedSize()
                                                       .help("Hold Shift to add or Option to subtract for one outline")
                     if session.tool == .wand, session.wandMode == .wand { wandControls }
@@ -50,7 +50,7 @@ struct LassoControls: View {
                     // Rectangles snap to whole pixels, so smoothing doesn't apply (as in Photoshop); ellipses curve.
                     if session.tool == .lasso || session.tool == .wand || (session.tool == .marquee && session.marqueeKind == .ellipse) {
                         Toggle("Anti-alias", isOn: $session.selectionAntialiased)
-                            .help(session.tool == .wand && session.wandMode == .object ? "Smooth the detected object outline; turn off for the raw pixel mask" : "Smooth selection edges; turn off for hard pixel edges")
+                            .help(session.tool == .wand && session.wandMode == .object ? String(localized: "Smooth the detected object outline; turn off for the raw pixel mask") : "Smooth selection edges; turn off for hard pixel edges")
                     }
                     Divider().frame(height: 18)
                     modifyControls

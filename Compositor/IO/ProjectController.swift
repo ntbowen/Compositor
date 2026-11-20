@@ -58,7 +58,7 @@ final class ProjectController {
             // Export As then starts on PNG too.
             exportedFormat = .png
             Self.lastExportFormat = .png
-        } catch { await showError("Couldn’t export PNG", error: error) }
+        } catch { await showError(String(localized: "Couldn’t export PNG"), error: error) }
     }
 
     /// The layer list's Export Layers as PNGs…: each selected layer on its own, trimmed to its pixels and named after it.
@@ -85,7 +85,7 @@ final class ProjectController {
             panel.allowedContentTypes = [.png]
             panel.canCreateDirectories = true
             panel.isExtensionHidden = false
-            panel.title = "Export Layer as PNG"
+            panel.title = String(localized: "Export Layer as PNG")
             panel.nameFieldStringValue = names[0]
             guard await run(panel), let url = panel.url else { return }
             urls = [url]
@@ -95,19 +95,19 @@ final class ProjectController {
             panel.canChooseDirectories = true
             panel.canChooseFiles = false
             panel.canCreateDirectories = true
-            panel.title = "Export \(layers.count) Layers as PNGs"
-            panel.message = "Choose a folder for the layers’ PNGs."
-            panel.prompt = "Export"
+            panel.title = String(localized: "Export \(layers.count) Layers as PNGs")
+            panel.message = String(localized: "Choose a folder for the layers’ PNGs.")
+            panel.prompt = String(localized: "Export")
             guard await run(panel), let url = panel.url else { return }
             urls = names.map { url.appendingPathComponent($0) }
             folder = url
             let existing = urls.filter { FileManager.default.fileExists(atPath: $0.path) }
             if !existing.isEmpty {
                 let alert = NSAlert()
-                alert.messageText = existing.count == 1 ? "“\(existing[0].lastPathComponent)” already exists. Replace it?"
-                    : "\(existing.count) of these files already exist in “\(url.lastPathComponent)”. Replace them?"
-                alert.addButton(withTitle: "Replace")
-                alert.addButton(withTitle: "Cancel")
+                alert.messageText = existing.count == 1 ? String(localized: "“\(existing[0].lastPathComponent)” already exists. Replace it?")
+                    : String(localized: "\(existing.count) of these files already exist in “\(url.lastPathComponent)”. Replace them?")
+                alert.addButton(withTitle: String(localized: "Replace"))
+                alert.addButton(withTitle: String(localized: "Cancel"))
                 guard await show(alert) == .alertFirstButtonReturn else { return }
             }
         }
@@ -121,12 +121,12 @@ final class ProjectController {
                 }
                 try await ImageExporter.shared.write(data, to: url)
             }
-        } catch { await showError("Couldn’t export layers", error: error); return }
+        } catch { await showError(String(localized: "Couldn’t export layers"), error: error); return }
         if !empty.isEmpty {
             let alert = NSAlert()
-            alert.messageText = empty.count == 1 ? "“\(empty[0])” has nothing to export" : "\(empty.count) layers have nothing to export"
-            alert.informativeText = "A layer with no visible pixels, such as an adjustment layer, isn’t saved as a PNG."
-            alert.addButton(withTitle: "OK")
+            alert.messageText = empty.count == 1 ? String(localized: "“\(empty[0])” has nothing to export") : String(localized: "\(empty.count) layers have nothing to export")
+            alert.informativeText = String(localized: "A layer with no visible pixels, such as an adjustment layer, isn’t saved as a PNG.")
+            alert.addButton(withTitle: String(localized: "OK"))
             _ = await show(alert)
         }
     }
@@ -159,7 +159,7 @@ final class ProjectController {
             let chosen: (data: Data, format: ExportFormat)? = await withCheckedContinuation { continuation in
                 let sheet = NSWindow()
                 sheet.styleMask = [.titled, .fullSizeContentView]
-                sheet.title = "Export As"
+                sheet.title = String(localized: "Export As")
                 sheet.titleVisibility = .hidden
                 sheet.contentViewController = NSHostingController(rootView: ExportAsSheet(
                     raster: raster, deepRaster: deepRaster, hdrRaster: hdrRaster, snapshot: snapshot, session: session,
@@ -179,7 +179,7 @@ final class ProjectController {
             let scoped = url.startAccessingSecurityScopedResource()
             defer { if scoped { url.stopAccessingSecurityScopedResource() } }
             try await ImageExporter.shared.write(chosen.data, to: url)
-        } catch { await showError("Couldn’t export", error: error) }
+        } catch { await showError(String(localized: "Couldn’t export"), error: error) }
     }
 
     /// The format this document was last exported in, offered first next time.
@@ -209,7 +209,7 @@ final class ProjectController {
         panel.allowedContentTypes = [format.type]
         panel.canCreateDirectories = true
         panel.isExtensionHidden = false
-        panel.title = "Export " + format.rawValue
+        panel.title = String(localized: "Export \(format.localizedName)")
         panel.nameFieldStringValue = Self.exportName(projectURL: session.projectURL, source: session.sourceImageURL, format: format)
         if session.projectURL == nil, let source = session.sourceImageURL {
             panel.directoryURL = source.deletingLastPathComponent()
@@ -225,7 +225,7 @@ final class ProjectController {
         let options: CanvasSizeOptions? = await withCheckedContinuation { continuation in
             let sheet = NSWindow()
             sheet.styleMask = [.titled, .fullSizeContentView]
-            sheet.title = "Canvas Size"
+            sheet.title = String(localized: "Canvas Size")
             sheet.titleVisibility = .hidden
             sheet.contentViewController = NSHostingController(rootView: CanvasSizeSheet(document: document, session: session) { options in
                 window.endSheet(sheet)
@@ -238,8 +238,8 @@ final class ProjectController {
         guard let options, let snapshot = session.projectSnapshot() else { return }
         do {
             let resized = try await CanvasResizer.shared.resize(snapshot, to: options)
-            session.applyDocumentSize(resized, actionName: "Canvas Size", keepingZoom: true)
-        } catch { await showError("Couldn’t change canvas size", error: error) }
+            session.applyDocumentSize(resized, actionName: String(localized: "Canvas Size"), keepingZoom: true)
+        } catch { await showError(String(localized: "Couldn’t change canvas size"), error: error) }
     }
 
     func imageSize() async {
@@ -248,7 +248,7 @@ final class ProjectController {
         let options: ImageSizeOptions? = await withCheckedContinuation { continuation in
             let sheet = NSWindow()
             sheet.styleMask = [.titled, .fullSizeContentView]
-            sheet.title = "Image Size"
+            sheet.title = String(localized: "Image Size")
             sheet.titleVisibility = .hidden
             sheet.contentViewController = NSHostingController(rootView: ImageSizeSheet(document: document) { options in
                 window.endSheet(sheet)
@@ -262,7 +262,7 @@ final class ProjectController {
         do {
             let resized = try await ImageResizer.shared.resize(snapshot, to: options)
             session.applyImageSize(resized)
-        } catch { await showError("Couldn’t resize the image", error: error) }
+        } catch { await showError(String(localized: "Couldn’t resize the image"), error: error) }
     }
 
     func trim() async {
@@ -271,7 +271,7 @@ final class ProjectController {
         let options: TrimOptions? = await withCheckedContinuation { continuation in
             let sheet = NSWindow()
             sheet.styleMask = [.titled, .fullSizeContentView]
-            sheet.title = "Trim"
+            sheet.title = String(localized: "Trim")
             sheet.titleVisibility = .hidden
             sheet.contentViewController = NSHostingController(rootView: TrimSheet { options in
                 window.endSheet(sheet)
@@ -286,8 +286,8 @@ final class ProjectController {
             guard let resized = try await ImageTrim.trim(snapshot, options: options) else {
                 return
             }
-            session.applyDocumentSize(resized, actionName: "Trim")
-        } catch { await showError("Couldn’t trim image", error: error) }
+            session.applyDocumentSize(resized, actionName: String(localized: "Trim"))
+        } catch { await showError(String(localized: "Couldn’t trim image"), error: error) }
     }
 
     /// View > Grid Settings…: changes only how the grid is drawn and snapped to, so nothing is saved or undone. The
@@ -346,7 +346,7 @@ final class ProjectController {
             panel.nameFieldStringValue = session.projectURL?.lastPathComponent
                 ?? source.map { $0.deletingPathExtension().lastPathComponent + ".comp" } ?? "Untitled.comp"
             if let source { panel.directoryURL = source.deletingLastPathComponent() }
-            panel.title = asNew ? "Save Project As" : "Save Project"
+            panel.title = asNew ? String(localized: "Save Project As") : String(localized: "Save Project")
             let response: NSApplication.ModalResponse
             if let window { response = await panel.beginSheetModal(for: window) }
             else { response = await panel.begin() }
@@ -376,7 +376,7 @@ final class ProjectController {
                 watchProject(at: destination)
                 return true
             } catch {
-                await showError("Couldn’t save the project", error: error)
+                await showError(String(localized: "Couldn’t save the project"), error: error)
                 return false
             }
         }
@@ -398,7 +398,7 @@ final class ProjectController {
             panel.allowsMultipleSelection = false
             panel.canChooseDirectories = false
             panel.treatsFilePackagesAsDirectories = false
-            panel.title = "Open Project"
+            panel.title = String(localized: "Open Project")
             let response: NSApplication.ModalResponse
             if let window { response = await panel.beginSheetModal(for: window) }
             else { response = await panel.begin() }
@@ -430,7 +430,7 @@ final class ProjectController {
             watchProject(at: source)
             return true
         } catch {
-            await showError("Couldn’t open the project", error: error)
+            await showError(String(localized: "Couldn’t open the project"), error: error)
             return false
         }
     }
@@ -468,11 +468,11 @@ final class ProjectController {
         await finishWriting()
         guard session.isModified, session.document != nil else { return true }
         let alert = NSAlert()
-        alert.messageText = "Save changes to \(session.projectURL?.lastPathComponent ?? "Untitled")?"
-        alert.informativeText = "Your changes will be lost if you don’t save them."
-        alert.addButton(withTitle: "Save")
-        alert.addButton(withTitle: "Cancel")
-        alert.addButton(withTitle: "Don’t Save")
+        alert.messageText = String(localized: "Save changes to \(session.projectURL?.lastPathComponent ?? String(localized: "Untitled"))?")
+        alert.informativeText = String(localized: "Your changes will be lost if you don’t save them.")
+        alert.addButton(withTitle: String(localized: "Save"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
+        alert.addButton(withTitle: String(localized: "Don’t Save"))
         let response = await show(alert)
         if response == .alertFirstButtonReturn { return await saveCurrent() }
         return response == .alertThirdButtonReturn
@@ -483,7 +483,7 @@ final class ProjectController {
         alert.alertStyle = .warning
         alert.messageText = title
         alert.informativeText = error.localizedDescription
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: String(localized: "OK"))
         _ = await show(alert)
     }
 
@@ -522,7 +522,7 @@ final class ProjectController {
             let urls = request.files.map(\.0)
             let projects = urls.filter { $0.pathExtension.lowercased() == "comp" }
             if projects.count > 1 {
-                await showError("Open one project at a time", error: ProjectError.invalid)
+                await showError(String(localized: "Open one project at a time"), error: ProjectError.invalid)
             } else {
                 var proceed = true
                 if let project = projects.first { proceed = await open(project) }

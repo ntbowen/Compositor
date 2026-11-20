@@ -75,7 +75,7 @@ struct ColorPaletteControls: View {
         .disabled(!session.canEditPalette && session.colorPicker == nil)
         .popover(isPresented: Binding(get: { choosingMaskBackground != nil }, set: { if !$0 { choosingMaskBackground = nil } })) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(choosingMaskBackground == true ? "Mask background" : "Mask foreground").font(.headline)
+                Text(choosingMaskBackground == true ? String(localized: "Mask background") : String(localized: "Mask foreground")).font(.headline)
                 HStack {
                     Button("Black · Hide") { chooseMask(.black) }
                     Button("White · Reveal") { chooseMask(.white) }
@@ -92,7 +92,7 @@ struct ColorPaletteControls: View {
         }
     }
     private func swatch(background: Bool) -> some View {
-        let label = background ? "Background color" : "Foreground color"
+        let label = background ? String(localized: "Background color") : String(localized: "Foreground color")
         return Button {
             // With a picker open, the swatch is one more color to sample into it, as the canvas is.
             if session.colorPicker != nil { session.sampleSwatchIntoColorPicker(background: background); return }

@@ -10,12 +10,12 @@ struct GradientControls: View {
                 HStack(spacing: 12) {
                     CompositorSegmentedPicker("Shape", selection: $session.gradientSettings.shape,
                                              options: GradientShape.allCases) {
-                        Text($0.rawValue)
+                        Text($0.localizedName)
                     }.fixedSize()
                     .help("Linear runs along the line; Radial spreads out from the start point")
                     swatch
                     Picker("Colors", selection: $session.gradientSettings.style) {
-                        ForEach(GradientStyle.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                        ForEach(GradientStyle.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                     }
                     .labelsHidden().fixedSize()
                     Toggle("Reverse", isOn: $session.gradientSettings.reversed)

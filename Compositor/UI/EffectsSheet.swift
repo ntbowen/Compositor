@@ -157,8 +157,8 @@ struct EffectsSheet: View {
             ColorSwatch(color: Color(red: Double(color?.red ?? 0), green: Double(color?.green ?? 0), blue: Double(color?.blue ?? 0)))
         }
         .buttonStyle(.plain)
-        .help(kind.rawValue + " color")
-        .accessibilityLabel(kind.rawValue + " color")
+        .help(String(localized: "\(kind.localizedName) color"))
+        .accessibilityLabel(String(localized: "\(kind.localizedName) color"))
     }
 
     private func slider(_ title: String, value: Binding<CGFloat>, range: ClosedRange<CGFloat>,
@@ -169,7 +169,7 @@ struct EffectsSheet: View {
             value.wrappedValue = min(limits.upperBound, max(limits.lowerBound, CGFloat(amount)))
         }
         return HStack(spacing: 10) {
-            Text(title).frame(width: 64, alignment: .leading)
+            Text(LocalizedStringKey(title)).frame(width: 64, alignment: .leading)
                 .scrubbable(sensitivity: 1, value: value, range: limits)
             // A manually entered larger value stays intact; only the thumb is pinned
             // to the end of the slider until the user drags it again.
@@ -182,7 +182,7 @@ struct EffectsSheet: View {
                 .arrowSteps(value: { Double(value.wrappedValue) },
                             change: setAmount)
             // A column the same width for every unit, so all the sliders end together and the units meet OK's edge.
-            Text(unit).frame(width: 16, alignment: .trailing).padding(.leading, -8)
+            Text(LocalizedStringKey(unit)).frame(width: 16, alignment: .trailing).padding(.leading, -8)
         }
     }
 }

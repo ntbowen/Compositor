@@ -26,7 +26,7 @@ struct CompositorSettingsView: View {
                     } label: {
                         VStack(spacing: 4) {
                             Image(systemName: tab.symbol).font(.system(size: 20)).frame(height: 24)
-                            Text(tab.rawValue)
+                            Text(tab.localizedName)
                         }
                         .frame(width: 78, height: 52)
                         .foregroundStyle(page == tab ? .primary : .secondary)
@@ -35,7 +35,7 @@ struct CompositorSettingsView: View {
                         .contentShape(.rect(cornerRadius: 8))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(tab.rawValue)
+                    .accessibilityLabel(tab.localizedName)
                     .accessibilityAddTraits(page == tab ? .isSelected : [])
                 }
             }
@@ -52,7 +52,7 @@ struct CompositorSettingsView: View {
         }
         .frame(width: 560, height: 580)
         .panelSurface()
-        .panelTitle("Settings")
+        .panelTitle(String(localized: "Settings"))
         .toolbar(removing: .title)
         // The toolbar's glass blurred the header drawn under it.
         .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
@@ -72,7 +72,7 @@ struct SettingsWindowMarker: NSViewRepresentable {
             window?.identifier = SettingsWindowMarker.identifier
             DispatchQueue.main.async { [weak self] in
                 guard let window = self?.window else { return }
-                PanelTitleBar.install(in: window, title: "Settings", showsCloseButton: true)
+                PanelTitleBar.install(in: window, title: String(localized: "Settings"), showsCloseButton: true)
             }
         }
     }
@@ -81,7 +81,7 @@ struct SettingsWindowMarker: NSViewRepresentable {
 private struct GeneralSettings: View {
     @AppStorage(CompositorAppearance.defaultsKey) private var appearance = CompositorAppearance.dark
     @AppStorage(MCPAccess.defaultsKey) private var access = MCPAccess.undecided
-    private let mcpDescription = "Lets local MCP clients view and edit open projects."
+    private let mcpDescription = String(localized: "Lets local MCP clients view and edit open projects.")
 
     var body: some View {
         ScrollView {
@@ -94,7 +94,7 @@ private struct GeneralSettings: View {
                         CompositorSegmentedPicker("Appearance", selection: Binding(get: { appearance }, set: { option in
                             appearance = option
                             option.apply()
-                        }), options: CompositorAppearance.allCases) { Text($0.rawValue) }
+                        }), options: CompositorAppearance.allCases) { Text($0.localizedName) }
                         .fixedSize()
                     }
                 }
@@ -153,8 +153,8 @@ private struct UpdateSettings: View {
 
                 SettingsCard {
                     Text("Software Update").font(.headline)
-                    detail("Installed version", value: installedVersion)
-                    detail("Last checked", value: lastChecked?.formatted(date: .abbreviated, time: .shortened) ?? "Never")
+                    detail(String(localized: "Installed version"), value: installedVersion)
+                    detail(String(localized: "Last checked"), value: lastChecked?.formatted(date: .abbreviated, time: .shortened) ?? String(localized: "Never"))
                     Divider()
                     Toggle("Check for updates automatically", isOn: Binding(get: { checksAutomatically }, set: {
                         checksAutomatically = $0
@@ -217,22 +217,22 @@ private struct MCPClientRow: View {
     private var note: String {
         if !allowed {
             switch client {
-            case .chatGPT: return "Adds Compositor to ChatGPT."
-            case .claude: return "Adds Compositor to Claude as an extension."
-            case .claudeCode: return "Paste into Terminal."
+            case .chatGPT: return String(localized: "Adds Compositor to ChatGPT.")
+            case .claude: return String(localized: "Adds Compositor to Claude as an extension.")
+            case .claudeCode: return String(localized: "Paste into Terminal.")
             }
         }
         switch client {
         case .chatGPT:
-            if MCPConnect.installed(MCPConnect.chatGPTBundleIDs) == nil { return "ChatGPT isn't on this Mac." }
-            return connect.chatGPTConnected ? "Connected. Quit and reopen ChatGPT to use it." : "Adds Compositor to ChatGPT."
+            if MCPConnect.installed(MCPConnect.chatGPTBundleIDs) == nil { return String(localized: "ChatGPT isn't on this Mac.") }
+            return connect.chatGPTConnected ? String(localized: "Connected. Quit and reopen ChatGPT to use it.") : String(localized: "Adds Compositor to ChatGPT.")
         case .claude:
-            if MCPConnect.installed([MCPConnect.claudeBundleID]) == nil { return "Claude isn't on this Mac." }
-            if connect.claudeConnected { return "Connected. Ask Claude in a new chat." }
-            if connect.claudeInstalled { return "Disconnected. To remove the extension too, use Claude's Settings › Extensions." }
-            return connect.claudeWaiting ? "Click Install in Claude to finish." : "Adds Compositor to Claude as an extension."
+            if MCPConnect.installed([MCPConnect.claudeBundleID]) == nil { return String(localized: "Claude isn't on this Mac.") }
+            if connect.claudeConnected { return String(localized: "Connected. Ask Claude in a new chat.") }
+            if connect.claudeInstalled { return String(localized: "Disconnected. To remove the extension too, use Claude's Settings › Extensions.") }
+            return connect.claudeWaiting ? String(localized: "Click Install in Claude to finish.") : String(localized: "Adds Compositor to Claude as an extension.")
         case .claudeCode:
-            return "Paste into Terminal."
+            return String(localized: "Paste into Terminal.")
         }
     }
 
@@ -260,11 +260,11 @@ private struct MCPClientRow: View {
                 if connect.claudeConnected {
                     Button("Disconnect") { connect.disconnectClaude() }
                 } else {
-                    Button(connect.claudeWaiting ? "Open Again" : "Connect") { connect.connectClaude() }
+                    Button(connect.claudeWaiting ? String(localized: "Open Again") : String(localized: "Connect")) { connect.connectClaude() }
                         .disabled(MCPConnect.installed([MCPConnect.claudeBundleID]) == nil)
                 }
             case .claudeCode:
-                Button(copied ? "Copied" : "Copy Setup") {
+                Button(copied ? String(localized: "Copied") : String(localized: "Copy Setup")) {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(claudeCodeSetup, forType: .string)
                     copied = true

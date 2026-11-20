@@ -367,7 +367,7 @@ extension EditorSession {
         }
         guard canEditLayers, document != nil, rect.width >= 1, rect.height >= 1 else { return }
         guard Int(rect.width) * Int(rect.height) <= Self.maxShapePixels else {
-            brushError = "That shape is too large. A shape can cover up to \(DocumentLimits.maxSurfaceMegapixels) megapixels."
+            brushError = String(localized: "That shape is too large. A shape can cover up to \(DocumentLimits.maxSurfaceMegapixels) megapixels.")
             return
         }
         do {
@@ -385,7 +385,7 @@ extension EditorSession {
                                         lineCap: line && draft.lineCap != .round ? draft.lineCap : nil)
             if !line { style.setStroke(width: draft.strokeWidth, color: draft.strokeColor) }
             let image = try Self.shapeImage(style, size: rect.size)
-            addPixelLayer(image, at: rect.origin, name: nextShapeName(draft.kind), editName: draft.kind.rawValue,
+            addPixelLayer(image, at: rect.origin, name: nextShapeName(draft.kind), editName: draft.kind.localizedName,
                           dropsSelection: false, shape: LayerShape(style: style, image: image))
         } catch { brushError = error.localizedDescription }
     }
@@ -394,8 +394,8 @@ extension EditorSession {
     func nextShapeName(_ kind: ShapeKind) -> String {
         let names = Set(document?.layers.map(\.name) ?? [])
         var number = 1
-        while names.contains("\(kind.rawValue) \(number)") { number += 1 }
-        return "\(kind.rawValue) \(number)"
+        while names.contains(String(localized: "\(kind.localizedName) \(number)")) { number += 1 }
+        return String(localized: "\(kind.localizedName) \(number)")
     }
 
     /// A shape layer scaled to a new size draws its shape again at that size, so a rounded corner keeps its radius
@@ -573,7 +573,7 @@ extension EditorSession {
         guard shapeStyleEditLayerID == nil, let layer = editingShapeLayer ?? editingLineLayer, canEditLayers else { return }
         if shapeColorPickerIsOpen { closeColorPicker(commit: true) }
         finishOpacityEdit()
-        beginEdit("Shape Style")
+        beginEdit(String(localized: "Shape Style"))
         shapeStyleEditLayerID = layer.id
     }
 
@@ -730,7 +730,7 @@ extension EditorSession {
               let thumbnail = try? PixelInvert.thumbnail(of: image) else { return false }
         finishShapeStyleEdit()
         finishOpacityEdit()
-        beginEdit("Fill")
+        beginEdit(String(localized: "Fill"))
         document?.layers[index].asset = ImportedImage(image: image, thumbnail: thumbnail, name: asset.name)
         document?.layers[index].shape = LayerShape(style: style, image: image)
         endEdit()
@@ -753,7 +753,7 @@ extension EditorSession {
         change(&style)
         guard style != before else { return }
         let open = shapeStyleEditLayerID != nil
-        if !open { finishOpacityEdit(); beginEdit("Shape Style") }
+        if !open { finishOpacityEdit(); beginEdit(String(localized: "Shape Style")) }
         if !paintShape(at: index, style: style, asset: asset), !open {
             endEdit()
             return
@@ -779,7 +779,7 @@ extension EditorSession {
         }
         finishShapeStyleEdit()
         finishOpacityEdit()
-        beginEdit("Shape Style")
+        beginEdit(String(localized: "Shape Style"))
         _ = paintShape(at: index, style: style, asset: asset)
         endEdit()
     }
@@ -805,7 +805,7 @@ extension EditorSession {
         guard style != beforeStyle || transform != beforeTransform, transform.isValid,
               Int(transform.size.width) * Int(transform.size.height) <= Self.maxShapePixels else { return }
         let open = shapeStyleEditLayerID != nil
-        if !open { finishOpacityEdit(); beginEdit("Shape Style") }
+        if !open { finishOpacityEdit(); beginEdit(String(localized: "Shape Style")) }
         guard let image = try? Self.shapeImage(style, size: transform.size),
               let thumbnail = try? PixelInvert.thumbnail(of: image) else {
             if !open { endEdit() }

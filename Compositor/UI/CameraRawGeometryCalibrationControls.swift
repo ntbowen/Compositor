@@ -11,7 +11,7 @@ struct CameraRawGeometryControls: View {
             Text("Upright").font(.subheadline)
             CompositorSegmentedPicker("Upright", selection: uprightBinding,
                                      options: CameraRawUprightMode.allCases) {
-                Text($0.rawValue)
+                Text($0.localizedName)
             }
             .help("Off leaves the picture as it is. Guided straightens from lines you draw on the picture.")
             if raw.geometry.upright == .guided {
@@ -35,7 +35,7 @@ struct CameraRawGeometryControls: View {
                 }
             }
             Picker("Projection", selection: binding(\.projection)) {
-                ForEach(CameraRawProjection.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawProjection.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }
             .help("Perspective allows stronger keystone. Rectilinear keeps the warp gentler.")
             geometrySlider("Vertical", \.vertical, help: "Straightens vertical lines toward the center.")
@@ -64,6 +64,7 @@ struct CameraRawGeometryControls: View {
     private func geometrySlider(_ title: String, _ key: WritableKeyPath<CameraRawGeometrySettings, Double>,
                                 range: ClosedRange<Double> = CameraRawGeometrySettings.toneRange, help: String) -> some View {
         let value = raw.geometry[keyPath: key]
+        let title = String(localizedKey: title), help = String(localizedKey: help)
         return HStack(spacing: 10) {
             Text(title).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(help)
                 .scrubbable(sensitivity: 1,
@@ -94,14 +95,14 @@ struct CameraRawCalibrationControls: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Picker("Process", selection: binding(\.process)) {
-                ForEach(CameraRawProcessVersion.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawProcessVersion.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }
             .help("Chooses how strongly the calibration sliders below are applied. Version 6 is the current default.")
-            Text(raw.calibration.process.summary)
+            Text(LocalizedStringKey(raw.calibration.process.summary))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-                .help(raw.calibration.process.summary)
+                .help(LocalizedStringKey(raw.calibration.process.summary))
             Text("Shadows").font(.subheadline)
             calibrationSlider("Tint", \.shadowTint, help: "Adds green or magenta to the darkest tones.")
             Text("Red Primary").font(.subheadline)
@@ -122,6 +123,7 @@ struct CameraRawCalibrationControls: View {
 
     private func calibrationSlider(_ title: String, _ key: WritableKeyPath<CameraRawCalibrationSettings, Double>, help: String) -> some View {
         let value = raw.calibration[keyPath: key]
+        let title = String(localizedKey: title), help = String(localizedKey: help)
         return HStack(spacing: 10) {
             Text(title).frame(minWidth: CameraRawControls.labelWidth, alignment: .leading).help(help)
                 .scrubbable(sensitivity: 1,

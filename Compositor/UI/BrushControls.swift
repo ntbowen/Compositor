@@ -4,27 +4,27 @@ struct BrushControls: View {
     @Bindable var session: EditorSession
     var body: some View {
         HStack(spacing: 12) {
-            Text(session.tool == .spotHealing ? "Spot Healing" : session.tool == .cloneStamp ? "Clone Stamp" : session.tool == .blur ? "Smear" : session.brushMode == .erase ? "Eraser" : "Brush").font(ToolHeaderStyle.titleFont)
+            Text(session.tool == .spotHealing ? String(localized: "Spot Healing") : session.tool == .cloneStamp ? String(localized: "Clone Stamp") : session.tool == .blur ? String(localized: "Smear") : session.brushMode == .erase ? String(localized: "Eraser") : String(localized: "Brush")).font(ToolHeaderStyle.titleFont)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
                     if session.tool == .brush {
                         CompositorSegmentedPicker("Mode", selection: $session.brushMode,
                                                  options: BrushToolMode.allCases) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .help("Paint with the foreground color (B), or erase pixels away (E)")
                     }
                     if session.tool == .blur {
                         CompositorSegmentedPicker("Mode", selection: $session.blurMode,
                                                  options: BlurToolMode.allCases) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .help("Liquify pushes pixels · Blur softens · Smudge drags color along")
                     }
                     if session.tool == .spotHealing {
                         CompositorSegmentedPicker("Type", selection: $session.spotHealingMode,
                                                  options: SpotHealingMode.allCases) {
-                            Text($0.rawValue)
+                            Text($0.localizedName)
                         }.fixedSize()
                         .accessibilityIdentifier("spotHealingType")
                     }

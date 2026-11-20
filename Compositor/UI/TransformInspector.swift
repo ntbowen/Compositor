@@ -8,7 +8,7 @@ struct TransformInspector: View {
     }
     var body: some View {
         HStack(spacing: 12) {
-          Text(session.transformTargetsMask ? "Transform Mask" : "Transform").font(ToolHeaderStyle.titleFont)
+          Text(session.transformTargetsMask ? String(localized: "Transform Mask") : String(localized: "Transform")).font(ToolHeaderStyle.titleFont)
               .padding(.leading, 18)
           // Command flips Auto Select while it's held, and the box shows it flipped (see HeldModifiers).
           Toggle("Auto Select", isOn: Binding(get: { session.transformAutoSelect != held.contains(.command) },
@@ -40,7 +40,7 @@ struct TransformInspector: View {
                 Picker("Sampling", selection: Binding(get: { value.sampling }, set: { sampling in
                     change { $0.sampling = sampling }
                 })) {
-                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }.frame(width: 170)
                 ToolHeaderPill(segmentWidth: 34) {
                     Button { change { $0.flipX.toggle() } } label: {
@@ -139,13 +139,14 @@ struct TransformValueField: View {
     @State private var stepper = ArrowStepper()
     @FocusState private var focused: Bool
     var body: some View {
+        let title = String(localizedKey: label)
         HStack(spacing: 4) {
-            Text(label).font(.caption).foregroundStyle(.secondary)
+            Text(title).font(.caption).foregroundStyle(.secondary)
                 .scrubbable(sensitivity: 1, value: Binding(get: { value }, set: { newValue in
                     change(newValue)
                     text = Self.formatted(Double(newValue))
                 }), range: range, step: 1, onEnd: finish)
-            TextField(label, text: $text)
+            TextField(title, text: $text)
                 .textFieldStyle(.roundedBorder).focused($focused)
                 .frame(width: fieldWidth)
                 .accessibilityIdentifier("transform\(label)")
@@ -213,6 +214,6 @@ private struct AlignButton: View {
         Button(action: action) {
             Image(systemName: symbol).font(.system(size: 15)).frame(width: 30, height: 28).contentShape(Rectangle())
         }
-        .buttonStyle(.borderless).help(title).accessibilityLabel(title)
+        .buttonStyle(.borderless).help(LocalizedStringKey(title)).accessibilityLabel(LocalizedStringKey(title))
     }
 }

@@ -120,8 +120,8 @@ struct LayersHeader: View {
                 searching.toggle()
             } label: { headerIcon(searching ? "xmark" : "magnifyingglass") }
                 .buttonStyle(.plain)
-                .help(searching ? "Close the search" : "Search layers by name")
-                .accessibilityLabel(searching ? "Close search" : "Search layers")
+                .help(searching ? String(localized: "Close the search") : String(localized: "Search layers by name"))
+                .accessibilityLabel(searching ? String(localized: "Close search") : String(localized: "Search layers"))
                 .accessibilityIdentifier("layerSearchButton")
             Button { isPresentingFilter.toggle() } label: {
                 headerIcon("line.3.horizontal.decrease", active: !session.layerTypeFilter.isEmpty)
@@ -204,7 +204,7 @@ private struct PlainSearchText: NSViewRepresentable {
         field.drawsBackground = false
         field.focusRingType = .none
         field.font = .systemFont(ofSize: NSFont.systemFontSize)
-        field.placeholderString = "Search Layers"
+        field.placeholderString = String(localized: "Search Layers")
         field.cell?.usesSingleLineMode = true
         field.cell?.isScrollable = true
         field.delegate = context.coordinator

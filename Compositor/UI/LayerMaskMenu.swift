@@ -9,8 +9,8 @@ struct LayerMaskMenu: View {
         Button {
             session.addMask(revealing: NSApp.currentEvent?.modifierFlags.contains(.option) != true)
         } label: { FooterIcon(systemName: "rectangle.inset.filled") }
-        .help(session.selection == nil ? "Add layer mask (Option-click for a black mask)"
-              : "Add layer mask revealing the selection (Option-click to hide it)")
+        .help(session.selection == nil ? String(localized: "Add layer mask (Option-click for a black mask)")
+              : String(localized: "Add layer mask revealing the selection (Option-click to hide it)"))
         .accessibilityLabel("Add layer mask")
         .disabled(!session.layersLookEditable || session.selectedLayerIDs.count != 1 || session.activeLayer == nil
                   || session.activeLayer?.mask != nil)
@@ -24,10 +24,10 @@ struct MaskAloneBadge: NSViewRepresentable {
     let layer: ImageLayer
     func makeNSView(context: Context) -> CanvasPillView {
         CanvasPillView(symbol: "rectangle.inset.filled", closeLabel: "Stop viewing the mask",
-                       closeHelp: "Show the image again (or Option-click the mask thumbnail)") { [session] in session.viewsMaskAlone = false }
+                       closeHelp: String(localized: "Show the image again (or Option-click the mask thumbnail)")) { [session] in session.viewsMaskAlone = false }
     }
     func updateNSView(_ view: CanvasPillView, context: Context) {
-        view.title = "Layer Mask"
+        view.title = String(localized: "Layer Mask")
         view.detail = layer.name
     }
 }
@@ -40,12 +40,12 @@ struct ProofBadge: NSViewRepresentable {
     var gamut = false
     func makeNSView(context: Context) -> CanvasPillView {
         gamut ? CanvasPillView(symbol: "exclamationmark.triangle", closeLabel: "Hide the gamut warning",
-                               closeHelp: "Stop marking colors the profile can't print") { [session] in session.showsGamutWarning = false }
+                               closeHelp: String(localized: "Stop marking colors the profile can't print")) { [session] in session.showsGamutWarning = false }
               : CanvasPillView(symbol: "printer", closeLabel: "Stop proofing",
-                               closeHelp: "Show the document's own colors again") { [session] in session.proofsColors = false }
+                               closeHelp: String(localized: "Show the document's own colors again")) { [session] in session.proofsColors = false }
     }
     func updateNSView(_ view: CanvasPillView, context: Context) {
-        view.title = gamut ? "CMYK Gamut Warning" : "CMYK Proof"
+        view.title = gamut ? String(localized: "CMYK Gamut Warning") : String(localized: "CMYK Proof")
         view.detail = session.proofProfile?.name ?? ""
     }
 }
@@ -70,11 +70,11 @@ final class CanvasPillView: NSView {
         name.font = .systemFont(ofSize: 12)
         name.textColor = NSColor.white.withAlphaComponent(0.6)
         name.lineBreakMode = .byTruncatingTail
-        let button = NSButton(image: NSImage(systemSymbolName: "xmark", accessibilityDescription: closeLabel) ?? NSImage(),
+        let button = NSButton(image: NSImage(systemSymbolName: "xmark", accessibilityDescription: String(localizedKey: closeLabel)) ?? NSImage(),
                               target: nil, action: nil)
         button.isBordered = false
         button.symbolConfiguration = .init(pointSize: 9, weight: .bold)
-        button.toolTip = closeHelp
+        button.toolTip = String(localizedKey: closeHelp)
         stack = NSStackView(views: [icon, title, name, button])
         stack.spacing = 7
         stack.edgeInsets = NSEdgeInsets(top: 0, left: 11, bottom: 0, right: 8)

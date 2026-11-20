@@ -62,7 +62,7 @@ extension View {
                                                 spacing: CGFloat = 2) -> some View {
         HStack(spacing: spacing) {
             self
-            Text(unit).scrubbable(sensitivity: sensitivity, value: scrubValue, range: range, step: step)
+            Text(LocalizedStringKey(unit)).scrubbable(sensitivity: sensitivity, value: scrubValue, range: range, step: step)
         }
     }
 

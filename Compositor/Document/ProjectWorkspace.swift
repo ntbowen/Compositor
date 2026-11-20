@@ -30,7 +30,7 @@ final class ProjectWorkspace {
             && s.gradientEdit == nil && s.pixelMove == nil && s.colorPicker == nil
     }
     init() {
-        let first = ProjectTab(name: "Untitled")
+        let first = ProjectTab(name: String(localized: "Untitled"))
         defer { attach(first) }
         first.session.skipsInitialClipboardCanvasSize = true
         tabs = [first]; selectedID = first.id
@@ -40,8 +40,8 @@ final class ProjectWorkspace {
     /// number them. Counting up for ever, closing the last tab made Untitled 2, then 3, and on.
     private var freeUntitledName: String {
         let taken = Set(tabs.map(\.title))
-        guard taken.contains("Untitled") else { return "Untitled" }
-        return (2...).lazy.map { "Untitled \($0)" }.first { !taken.contains($0) }!
+        guard taken.contains(String(localized: "Untitled")) else { return String(localized: "Untitled") }
+        return (2...).lazy.map { String(localized: "Untitled \($0)") }.first { !taken.contains($0) }!
     }
     /// Whether a tab can close: not the only one while it's empty, the blank start it would only be replaced with.
     func canClose(_ tab: ProjectTab) -> Bool {
@@ -234,7 +234,7 @@ final class ProjectWorkspace {
         guard !ids.isEmpty else { return false }
         if source.id == selectedID {
             guard source.session.canEditLayers else { return false }
-            source.session.duplicateLayers(ids, editName: "Paste")
+            source.session.duplicateLayers(ids, editName: String(localized: "Paste"))
             return true
         }
         let destination = selectedID
@@ -266,9 +266,9 @@ final class ProjectWorkspace {
         }
         let used = target.session.document?.layers.reduce(0) { $0 + ($1.asset.map { $0.image.width * $0.image.height } ?? 0) } ?? 0
         let added = copied.reduce(0) { $0 + ($1.asset.map { $0.image.width * $0.image.height } ?? 0) }
-        guard used + added <= DocumentLimits.documentPixelBudget else { target.session.importError = "The copied layers exceed this project’s \(DocumentLimits.documentBudgetMegapixels)-megapixel limit."; return }
+        guard used + added <= DocumentLimits.documentPixelBudget else { target.session.importError = String(localized: "The copied layers exceed this project’s \(DocumentLimits.documentBudgetMegapixels)-megapixel limit."); return }
         guard target.session.canRetainGIFSources(in: (target.session.document?.layers ?? []) + copied) else {
-            target.session.importError = "The copied GIFs exceed this project’s animation memory limit."
+            target.session.importError = String(localized: "The copied GIFs exceed this project’s animation memory limit.")
             return
         }
         isManaging = true
@@ -323,7 +323,7 @@ final class ProjectWorkspace {
                     gifAnimation: layer.gifAnimation)
             }
             target.session.isProjectBusy = false
-            target.session.beginEdit("Copy Layers from Project")
+            target.session.beginEdit(String(localized: "Copy Layers from Project"))
             if target.session.document == nil { target.session.createDocument(width: Int(size.width), height: Int(size.height)) }
             target.session.document?.layers.append(contentsOf: layers)
             target.session.activeLayerID = mapping[id]

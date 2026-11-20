@@ -145,9 +145,9 @@ nonisolated enum HueSampleMode: String, CaseIterable, Sendable {
     }
     var help: String {
         switch self {
-        case .replace: "Click the image to center this range on that color"
-        case .add: "Click the image to widen this range to include that color"
-        case .remove: "Click the image to narrow this range to exclude that color"
+        case .replace: String(localized: "Click the image to center this range on that color")
+        case .add: String(localized: "Click the image to widen this range to include that color")
+        case .remove: String(localized: "Click the image to narrow this range to exclude that color")
         }
     }
 }
@@ -558,7 +558,7 @@ extension EditorSession {
               let current = document?.layers[index], displayedAsset(for: current)?.image === edit.original.image else { return }
         do {
             let edited = try layerByEditingPixels(current, asset: asset, transform: current.transform, mask: current.mask)
-            beginEdit("Hue/Saturation")
+            beginEdit(String(localized: "Hue/Saturation"))
             document?.layers[index] = edited
             endEdit()
         } catch { brushError = error.localizedDescription }

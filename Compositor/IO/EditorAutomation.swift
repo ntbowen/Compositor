@@ -129,10 +129,10 @@ final class EditorAutomation {
                 throw Failure("Close the current dialog and try the MCP request again.")
             }
             let alert = NSAlert()
-            alert.messageText = "Allow MCP control?"
-            alert.informativeText = "Local MCP clients can view and edit open projects, import media, and save or export your work. You can change this in Settings → General."
-            alert.addButton(withTitle: "Don’t Allow").keyEquivalent = "\u{1b}"
-            alert.addButton(withTitle: "Allow").keyEquivalent = ""
+            alert.messageText = String(localized: "Allow MCP control?")
+            alert.informativeText = String(localized: "Local MCP clients can view and edit open projects, import media, and save or export your work. You can change this in Settings → General.")
+            alert.addButton(withTitle: String(localized: "Don’t Allow")).keyEquivalent = "\u{1b}"
+            alert.addButton(withTitle: String(localized: "Allow")).keyEquivalent = ""
             NSApp.activate()
             let answer: NSApplication.ModalResponse
             if let window, window.isVisible {
@@ -237,7 +237,7 @@ final class EditorAutomation {
             if let name = args["name"] as? String { try validateName(name) }
             let kind = args["kind"] as? String ?? "pixel"
             guard kind == "pixel" || kind == "group" else { throw Failure("Use pixel or group for kind.") }
-            session.beginEdit(kind == "pixel" ? "New Blank Layer" : "New Group")
+            session.beginEdit(kind == "pixel" ? String(localized: "New Blank Layer") : String(localized: "New Group"))
             defer { session.endEdit() }
             if kind == "pixel" { session.addBlankLayer() }
             else { session.addGroup() }
@@ -317,7 +317,7 @@ final class EditorAutomation {
             let data = try JSONSerialization.data(withJSONObject: merged)
             let value = try JSONDecoder().decode(LayerAdjustment.self, from: data)
             guard value.kind == old.kind, value.isValid else { throw Failure("Invalid settings for this adjustment.") }
-            session.beginEdit("Edit \(old.kind.rawValue)")
+            session.beginEdit(String(localized: "Edit \(old.kind.localizedName)"))
             session.updateAdjustment(id, value: value)
             session.endEdit()
         case "set_selection":
@@ -442,7 +442,7 @@ final class EditorAutomation {
             guard t.isValid else { throw Failure("Invalid layer transform.") }
             updated.transform = t
         }
-        session.beginEdit("Edit Layer")
+        session.beginEdit(String(localized: "Edit Layer"))
         session.document?.layers[index] = updated
         session.endEdit()
     }

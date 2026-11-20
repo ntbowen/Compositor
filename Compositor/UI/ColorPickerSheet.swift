@@ -148,13 +148,14 @@ struct ColorPickerSheet: View {
     }
 
     private func channelRow(_ label: String, _ channel: ColorPickerState.Channel, accessibilityLabel: String) -> some View {
+        let accessibilityLabel = String(localizedKey: accessibilityLabel)
         _ = state.channelDraft(channel)
         let channelValue = Binding(get: { state.channelValue(channel) }, set: { state.setChannel(channel, to: $0) })
         let draft = Binding(get: { state.channelDraft(channel) }, set: { state.editChannel(channel, draft: $0) })
         return GridRow {
-            Text(label).frame(width: 12, alignment: .leading)
+            Text(LocalizedStringKey(label)).frame(width: 12, alignment: .leading)
                 .scrubbable(sensitivity: 1, value: channelValue, range: 0...255)
-            TextField(label, text: draft)
+            TextField(LocalizedStringKey(label), text: draft)
                 .frame(width: 52)
                 .focused($focusedChannel, equals: channel)
                 .onSubmit { finish(true) }
@@ -227,12 +228,12 @@ struct DialogColorSwatch: View {
     let session: EditorSession
     var body: some View {
         Button {
-            session.openDialogColorPicker(title: title, color: color) { color = $0 }
+            session.openDialogColorPicker(title: String(localizedKey: title), color: color) { color = $0 }
         } label: {
             ColorSwatch(color: color.swiftUI)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(title)
+        .accessibilityLabel(LocalizedStringKey(title))
         .onChange(of: session.colorPicker?.color) { _, _ in
             if session.colorPicker?.target == .dialog(title: title) { session.previewDialogColor() }
         }

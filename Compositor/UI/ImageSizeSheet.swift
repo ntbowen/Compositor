@@ -153,7 +153,7 @@ struct ImageSizeSheet: View {
             }
             if resample {
                 Picker("Sampling", selection: $sampling) {
-                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }
                 Text("Resizes layer pixels and applies existing transforms. Undo restores the originals.")
                     .font(.callout).foregroundStyle(.secondary)
@@ -161,7 +161,7 @@ struct ImageSizeSheet: View {
                 Text("Only print dimensions and resolution change. Pixels stay unchanged.")
                     .font(.callout).foregroundStyle(.secondary)
             }
-            Text(valid ? "Result: \(Int(width.rounded())) × \(Int(height.rounded())) pixels" : "Use 1–\(DocumentLimits.maxSide.formatted()) pixels per side, up to \(DocumentLimits.maxSurfaceMegapixels) megapixels, and 1–9,600 pixels/inch.")
+            Text(valid ? String(localized: "Result: \(Int(width.rounded())) × \(Int(height.rounded())) pixels") : String(localized: "Use 1–\(DocumentLimits.maxSide.formatted()) pixels per side, up to \(DocumentLimits.maxSurfaceMegapixels) megapixels, and 1–9,600 pixels/inch."))
                 .foregroundStyle(valid ? Color.secondary : Color.orange).font(.callout)
             HStack {
                 Button("Cancel") { finish(nil) }.configuredNativeShortcut(.escape)

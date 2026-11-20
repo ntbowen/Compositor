@@ -49,6 +49,7 @@ final class FloatingPanelController: NSObject, NSWindowDelegate {
     }
 
     func show(title: String, content: some View, placement: FloatingPanelPlacement = .automatic) {
+        let title = String(localizedKey: title)
         self.placement = placement
         let panel = self.panel ?? makePanel()
         let wasVisible = panel.isVisible

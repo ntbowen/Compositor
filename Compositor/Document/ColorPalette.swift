@@ -332,17 +332,17 @@ enum ColorPickerTarget: Equatable {
     case dialog(title: String)
     var title: String {
         switch self {
-        case .text: return "Color Picker (Text Color)"
-        case .shapeFill: return "Color Picker (Fill Color)"
-        case .shapeStroke: return "Color Picker (Stroke Color)"
-        case .effect(let kind): return "Color Picker (\(kind.rawValue) Color)"
-        case .palette(let background): return background ? "Color Picker (Background Color)" : "Color Picker (Foreground Color)"
-        case .gradientMap(let highlights): return highlights ? "Color Picker (Gradient Map Highlights)" : "Color Picker (Gradient Map Shadows)"
-        case .vignette: return "Color Picker (Vignette Color)"
-        case .rimLight(let index): return "Color Picker (Light \(index + 1))"
-        case .volumetricLight: return "Color Picker (Light Color)"
-        case .dither(let light): return light ? "Color Picker (Light Color)" : "Color Picker (Dark Color)"
-        case .dialog(let title): return "Color Picker (\(title))"
+        case .text: return String(localized: "Color Picker (Text Color)")
+        case .shapeFill: return String(localized: "Color Picker (Fill Color)")
+        case .shapeStroke: return String(localized: "Color Picker (Stroke Color)")
+        case .effect(let kind): return String(localized: "Color Picker (\(kind.localizedName) Color)")
+        case .palette(let background): return background ? String(localized: "Color Picker (Background Color)") : String(localized: "Color Picker (Foreground Color)")
+        case .gradientMap(let highlights): return highlights ? String(localized: "Color Picker (Gradient Map Highlights)") : String(localized: "Color Picker (Gradient Map Shadows)")
+        case .vignette: return String(localized: "Color Picker (Vignette Color)")
+        case .rimLight(let index): return String(localized: "Color Picker (Light \(index + 1))")
+        case .volumetricLight: return String(localized: "Color Picker (Light Color)")
+        case .dither(let light): return light ? String(localized: "Color Picker (Light Color)") : String(localized: "Color Picker (Dark Color)")
+        case .dialog(let title): return String(localized: "Color Picker (\(title))")
         }
     }
 }

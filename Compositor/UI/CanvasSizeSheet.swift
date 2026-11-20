@@ -9,7 +9,9 @@ struct CanvasSizeSheet: View {
     @State private var anchor = 4
     @State private var extensionChoice = "Transparent"
     @State private var customColor = PaletteColor.white
-    private let anchorNames = ["Top left", "Top center", "Top right", "Middle left", "Center", "Middle right", "Bottom left", "Bottom center", "Bottom right"]
+    private let anchorNames = [String(localized: "Top left"), String(localized: "Top center"), String(localized: "Top right"),
+                               String(localized: "Middle left"), String(localized: "Center"), String(localized: "Middle right"),
+                               String(localized: "Bottom left"), String(localized: "Bottom center"), String(localized: "Bottom right")]
 
     init(document: CanvasDocument, session: EditorSession, finish: @escaping (CanvasSizeOptions?) -> Void) {
         self.foreground = session.foregroundColor
@@ -72,7 +74,7 @@ struct CanvasSizeSheet: View {
                 .font(.callout).foregroundStyle(.secondary)
             Divider()
             Picker("Units", selection: $draft.unit) {
-                ForEach(CanvasUnit.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CanvasUnit.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }
             HStack {
                 Text("Width").frame(width: 60, alignment: .leading)

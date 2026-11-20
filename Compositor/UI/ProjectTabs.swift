@@ -406,7 +406,7 @@ private struct ProjectTabButton: View {
         .foregroundStyle(active ? Color.primary : inactiveText)
         .background(tabFill, in: Capsule())
         .overlay(Capsule().strokeBorder(targeted ? Color.accentColor : .clear, lineWidth: 2))
-        .help(targeted ? "Add to \(tab.title)" : tab.title)
+        .help(targeted ? String(localized: "Add to \(tab.title)") : tab.title)
         .onDrop(of: [UTType.fileURL.identifier, UTType.image.identifier, ProjectWorkspace.layerType], delegate:
             ProjectTabDropDelegate(workspace: workspace, destination: tab.id, targeted: $targeted))
     }
@@ -418,7 +418,7 @@ struct NewProjectDropTarget: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(targeted ? Color.accentColor : .clear, lineWidth: 2))
-            .help(targeted ? "Open in a new project tab" : "New canvas (⌘N) · Drop images here for new tabs")
+            .help(targeted ? String(localized: "Open in a new project tab") : String(localized: "New canvas (⌘N) · Drop images here for new tabs"))
             .onDrop(of: [UTType.fileURL.identifier, UTType.image.identifier, ProjectWorkspace.layerType], delegate:
                 ProjectTabDropDelegate(workspace: workspace, destination: nil, targeted: $targeted))
     }

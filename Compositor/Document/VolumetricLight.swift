@@ -606,7 +606,7 @@ extension EditorSession {
         layer.transform = source.transform
         layer.name = "Depth"
         layer.parentID = source.parentID
-        beginEdit("Extract Depth")
+        beginEdit(String(localized: "Extract Depth"))
         document?.layers.insert(layer, at: index + 1)
         activeLayerID = layer.id
         endEdit()

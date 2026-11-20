@@ -34,7 +34,7 @@ struct LayersPanel: View {
                 }
             } else {
                 LayersUnavailableView("No layers yet", systemImage: "square.3.layers.3d") {
-                    Text(session.document == nil ? "Create a canvas or import a file." : "Import a file or add a blank layer.")
+                    Text(session.document == nil ? String(localized: "Create a canvas or import a file.") : String(localized: "Import a file or add a blank layer."))
                 }
             }
             Divider()
@@ -98,14 +98,14 @@ struct LayersFooter: View {
                 .help("New filter layer").accessibilityLabel("New filter layer")
                 .disabled(!session.layersLookEditable)
             FooterMenu(systemName: "sparkles", items: LayerEffectKind.allCases.map { kind in
-                (kind.rawValue + "…", { session.addEffect(kind) })
+                (kind.localizedName + "…", { session.addEffect(kind) })
             })
                 .help("Add layer effect").accessibilityLabel("Layer effects")
                 .accessibilityIdentifier("layerEffects").disabled(!session.layersLookEditable || session.activeLayer?.isGroup != false || session.activeLayer?.asset == nil)
             Spacer()
             Button { session.deleteLayerOrMask() } label: { FooterIcon(systemName: "trash") }
-                .help(session.selectedEffect != nil ? "Delete selected effect" : session.isMaskSelected ? "Delete layer mask" : session.selectedLayerIDs.count > 1 ? "Delete selected layers" : "Delete selected layer")
-                .accessibilityLabel(session.selectedEffect != nil ? "Delete selected effect" : session.isMaskSelected ? "Delete layer mask" : session.selectedLayerIDs.count > 1 ? "Delete selected layers" : "Delete selected layer")
+                .help(session.selectedEffect != nil ? String(localized: "Delete selected effect") : session.isMaskSelected ? String(localized: "Delete layer mask") : session.selectedLayerIDs.count > 1 ? String(localized: "Delete selected layers") : String(localized: "Delete selected layer"))
+                .accessibilityLabel(session.selectedEffect != nil ? String(localized: "Delete selected effect") : session.isMaskSelected ? String(localized: "Delete layer mask") : session.selectedLayerIDs.count > 1 ? String(localized: "Delete selected layers") : String(localized: "Delete selected layer"))
                 .accessibilityIdentifier("deleteLayer")
                 .disabled(!session.layersLookEditable || session.activeLayer == nil)
         }
@@ -185,7 +185,7 @@ private final class FooterMenuItem: NSMenuItem {
 
     init(title: String, action: @escaping @MainActor () -> Void) {
         run = action
-        super.init(title: title, action: #selector(choose), keyEquivalent: "")
+        super.init(title: String(localizedKey: title), action: #selector(choose), keyEquivalent: "")
         target = self
     }
 

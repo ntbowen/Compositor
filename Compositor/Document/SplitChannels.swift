@@ -53,14 +53,14 @@ extension EditorSession {
             // Bottom to top: Alpha, Blue, Green, then Red, so they read top-down in the Layers panel as R, G, B, A.
             let children = try zip(ChannelPack.Channel.allCases, planes).reversed().map { channel, plane in
                 var child = ImageLayer(asset: ImportedImage(image: plane, thumbnail: try PixelAdjust.thumbnail(of: plane),
-                                                            name: channel.rawValue), origin: .zero)
+                                                            name: channel.localizedName), origin: .zero)
                 child.transform = layer.transform
                 child.parentID = group.id
                 return child
             }
             layers.insert(contentsOf: children, at: index + 1)
             guard (try? LayerHierarchy.validate(layers.map(\.hierarchyRecord))) != nil else { return }
-            beginEdit("Split Channels")
+            beginEdit(String(localized: "Split Channels"))
             self.document?.layers = layers
             activeLayerID = children.last?.id
             collapsedGroupIDs.remove(group.id)

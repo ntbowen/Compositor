@@ -55,16 +55,16 @@ final class MCPConnect {
     func connectChatGPT() {
         problem = nil
         guard FileManager.default.fileExists(atPath: Self.chatGPTFolder.path) else {
-            problem = "Open ChatGPT once first, so it makes its settings, then connect."
+            problem = String(localized: "Open ChatGPT once first, so it makes its settings, then connect.")
             return
         }
-        do { try Self.addCompositor(in: Self.chatGPTFolder) } catch { problem = "Couldn't add Compositor to ChatGPT's settings." }
+        do { try Self.addCompositor(in: Self.chatGPTFolder) } catch { problem = String(localized: "Couldn't add Compositor to ChatGPT's settings.") }
         refresh()
     }
 
     func disconnectChatGPT() {
         problem = nil
-        do { try Self.removeCompositor(in: Self.chatGPTFolder) } catch { problem = "Couldn't take Compositor out of ChatGPT's settings." }
+        do { try Self.removeCompositor(in: Self.chatGPTFolder) } catch { problem = String(localized: "Couldn't take Compositor out of ChatGPT's settings.") }
         refresh()
     }
 
@@ -120,7 +120,7 @@ final class MCPConnect {
         // Still installed in Claude: letting it back in is all Connect has to do.
         refresh()
         if claudeInstalled { return }
-        guard let claude = Self.installed([Self.claudeBundleID]) else { problem = "Claude isn't on this Mac."; return }
+        guard let claude = Self.installed([Self.claudeBundleID]) else { problem = String(localized: "Claude isn't on this Mac."); return }
         do {
             let file = try Self.makeClaudeExtension()
             let configuration = NSWorkspace.OpenConfiguration()
@@ -129,7 +129,7 @@ final class MCPConnect {
             claudeWaiting = true
             watchForClaude()
         } catch {
-            problem = "Couldn't make the Claude extension."
+            problem = String(localized: "Couldn't make the Claude extension.")
         }
     }
 

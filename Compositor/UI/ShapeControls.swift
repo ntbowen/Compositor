@@ -23,7 +23,7 @@ struct ShapeControls: View {
                 session.shapeKind = kind
             }),
                                      options: ShapeKind.allCases) {
-                Text($0.rawValue)
+                Text($0.localizedName)
             }.fixedSize()
             .help("Shift-U (or Tab) steps through Rectangle, Ellipse and Line")
             HStack(spacing: 6) {
@@ -33,10 +33,10 @@ struct ShapeControls: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Fill color")
-                .help(editsLine ? "Color of the selected line"
-                      : session.shapeKind == .line ? "Color of the next line"
-                      : editsSelection ? "Fill color of the selected shape"
-                      : "Shapes fill with the foreground color; click to change it")
+                .help(editsLine ? String(localized: "Color of the selected line")
+                      : session.shapeKind == .line ? String(localized: "Color of the next line")
+                      : editsSelection ? String(localized: "Fill color of the selected shape")
+                      : String(localized: "Shapes fill with the foreground color; click to change it"))
             }
             if showsStroke {
                 HStack(spacing: 6) {
@@ -84,20 +84,20 @@ struct ShapeControls: View {
                     }
                     .pickerStyle(.menu).labelsHidden().fixedSize()
                 }
-                .help(editsLine ? "Dashes of the selected line; they grow with its width"
-                      : "Solid, dashed or dotted; dashes grow with the line's width")
+                .help(editsLine ? String(localized: "Dashes of the selected line; they grow with its width")
+                      : String(localized: "Solid, dashed or dotted; dashes grow with the line's width"))
                 HStack(spacing: 6) {
                     Text("Cap")
                     Picker("Cap", selection: Binding(get: { session.displayedLineCap },
                                                     set: { session.setDisplayedLineCap($0) })) {
                         ForEach(ShapeLineCap.allCases, id: \.self) { cap in
-                            Label { Text(cap.rawValue) } icon: { Image(nsImage: LineSample.cap(cap)) }.tag(cap)
+                            Label { Text(cap.localizedName) } icon: { Image(nsImage: LineSample.cap(cap)) }.tag(cap)
                         }
                     }
                     .pickerStyle(.menu).labelsHidden().fixedSize()
                 }
-                .help(editsLine ? "How this line's ends are finished"
-                      : "How the line's ends, and each of its dashes and dots, are finished")
+                .help(editsLine ? String(localized: "How this line's ends are finished")
+                      : String(localized: "How the line's ends, and each of its dashes and dots, are finished"))
             }
             if showsRadius {
                 HStack(spacing: 6) {
@@ -113,16 +113,16 @@ struct ShapeControls: View {
                                     change: { session.setDisplayedCornerRadius($0) })
                 }
                 .help(editsSelection
-                      ? "Round this rectangle's corners by this many pixels; 0 keeps them square"
-                      : "Round the rectangle's corners by this many pixels; 0 keeps them square")
+                      ? String(localized: "Round this rectangle's corners by this many pixels; 0 keeps them square")
+                      : String(localized: "Round the rectangle's corners by this many pixels; 0 keeps them square"))
                 Toggle("Smooth Corners", isOn: Binding(get: { session.displayedShapeSmoothing },
                                                       set: { session.setDisplayedShapeSmoothing($0) }))
                     .toggleStyle(.checkbox)
                     .fixedSize()
                     .disabled(session.displayedCornerRadius <= 0)
                     .help(session.displayedCornerRadius <= 0
-                          ? "Set a radius above 0 to use smooth corners."
-                          : "Use smooth squircle corners at 60% smoothing, matching Figma's iOS setting")
+                          ? String(localized: "Set a radius above 0 to use smooth corners.")
+                          : String(localized: "Use smooth squircle corners at 60% smoothing, matching Figma's iOS setting"))
             }
             Spacer(minLength: 0)
         }

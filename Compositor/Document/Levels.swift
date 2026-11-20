@@ -221,16 +221,16 @@ extension EditorSession {
                     let result = try DeepLayer.run(deep) { half in
                         try LevelsFilter.run(LevelsJob(image: half, settings: job.settings, selection: job.selection, mapping: job.mapping))
                     }
-                    return try DeepLayer.asset(result, name: "Levels")
+                    return try DeepLayer.asset(result, name: String(localized: "Levels"))
                 }
                 let image = try LevelsFilter.run(job)
-                return ImportedImage(image: image, thumbnail: try PixelAdjust.thumbnail(of: image), name: "Levels")
+                return ImportedImage(image: image, thumbnail: try PixelAdjust.thumbnail(of: image), name: String(localized: "Levels"))
             }.value
             guard let index = document?.layers.firstIndex(where: { $0.id == edit.layerID }),
                   let current = document?.layers[index], displayedAsset(for: current)?.image === edit.original.image,
                   pixelEditTransformMatches(current, transform: edit.transform) else { return }
             let edited = try layerByEditingPixels(current, asset: asset, transform: current.transform, mask: current.mask)
-            beginEdit("Levels")
+            beginEdit(String(localized: "Levels"))
             document?.layers[index] = edited
             endEdit()
         } catch { brushError = error.localizedDescription }

@@ -52,8 +52,8 @@ struct CameraRawControls: View {
                 Button("Vectorscope") { session.filterEdit?.cameraRawScopeMode = .vectorscope }
             }
             .help(mode == .histogram
-                  ? "Tones from black on the left to white on the right: blacks, shadows, midtones, highlights, whites. Control-click to show the vectorscope."
-                  : "Hue around the wheel, saturation outward from the center. Control-click to show the histogram.")
+                  ? String(localized: "Tones from black on the left to white on the right: blacks, shadows, midtones, highlights, whites. Control-click to show the vectorscope.")
+                  : String(localized: "Hue around the wheel, saturation outward from the center. Control-click to show the histogram."))
             Text(readout)
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(.secondary)
@@ -62,8 +62,8 @@ struct CameraRawControls: View {
     }
 
     private var readout: String {
-        guard let value = session.filterEdit?.cameraRawReadout else { return "R —   G —   B —" }
-        return "R \(value.red)   G \(value.green)   B \(value.blue)"
+        guard let value = session.filterEdit?.cameraRawReadout else { return String(localized: "R —   G —   B —") }
+        return String(localized: "R \(value.red)   G \(value.green)   B \(value.blue)")
     }
 
     private func clipButton(shadows: Bool) -> some View {
@@ -78,8 +78,8 @@ struct CameraRawControls: View {
                 .foregroundStyle(on ? (shadows ? Color.blue : Color.red) : Color.white.opacity(0.55))
         }
         .buttonStyle(.plain)
-        .help(shadows ? "Show clipped shadows in blue on the preview." : "Show clipped highlights in red on the preview.")
-        .accessibilityLabel(shadows ? "Shadow Clipping Indicator" : "Highlight Clipping Indicator")
+        .help(shadows ? String(localized: "Show clipped shadows in blue on the preview.") : String(localized: "Show clipped highlights in red on the preview."))
+        .accessibilityLabel(shadows ? String(localized: "Shadow Clipping Indicator") : String(localized: "Highlight Clipping Indicator"))
     }
 
     private func graph(_ scope: CameraRawScope?, mode: CameraRawScopeMode) -> some View {
@@ -105,7 +105,7 @@ struct CameraRawControls: View {
                 }
             }
         }
-        .accessibilityLabel(mode == .histogram ? "RGB histogram" : "Vectorscope")
+        .accessibilityLabel(mode == .histogram ? String(localized: "RGB histogram") : String(localized: "Vectorscope"))
     }
 
     private func ribbon(_ bins: [Double], color: Color, peak: Double, in context: GraphicsContext, size: CGSize) {
@@ -131,7 +131,7 @@ struct CameraRawControls: View {
                         Image(systemName: expanded.contains(section) ? "chevron.down" : "chevron.right")
                             .font(.caption.weight(.semibold))
                             .frame(width: 12)
-                        Text(section.rawValue).font(.headline)
+                        Text(section.localizedName).font(.headline)
                     }
                     .contentShape(Rectangle())
                 }
@@ -219,7 +219,7 @@ struct CameraRawControls: View {
                 Text("White Balance").frame(minWidth: Self.labelWidth, alignment: .leading)
                     .help("Auto balances the average color. Custom follows Temperature and Tint.")
                 Picker("White Balance", selection: Binding(get: { raw.whiteBalance }, set: setWhiteBalance)) {
-                    ForEach(CameraRawWhiteBalance.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(CameraRawWhiteBalance.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }
                 .labelsHidden()
                 .help("Auto balances the average color. Custom follows Temperature and Tint.")
@@ -261,7 +261,7 @@ struct CameraRawControls: View {
             slider("Glow", \.glow, range: CameraRawSettings.unitRange, decimals: 0, clipping: nil,
                    help: "Spreads a glow from the bright areas.")
             Picker("Style", selection: Binding(get: { raw.glowStyle }, set: { style in update { $0.cameraRaw.glowStyle = style } })) {
-                ForEach(CameraRawGlowStyle.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawGlowStyle.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }
             .help("Diffusion is soft and wide, Bloom is tighter, and Halation is a red fringe.")
             VStack(alignment: .leading, spacing: 8) {
@@ -277,7 +277,7 @@ struct CameraRawControls: View {
             slider("Amount", \.vignetteAmount, range: CameraRawSettings.toneRange, decimals: 0, clipping: nil,
                    help: "Darkens or lightens the edges. The center does not change.")
             Picker("Style", selection: Binding(get: { raw.vignetteStyle }, set: { style in update { $0.cameraRaw.vignetteStyle = style } })) {
-                ForEach(CameraRawVignetteStyle.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(CameraRawVignetteStyle.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }
             .help("Highlight Priority protects bright edges. Color Priority also reduces color. Paint Overlay covers the edges evenly.")
             VStack(alignment: .leading, spacing: 8) {
@@ -302,7 +302,8 @@ struct CameraRawControls: View {
     }
 
     private func eye(shown: Bool, name: String, group: PanelEye) -> some View {
-        Button {
+        let name = String(localizedKey: name)
+        return Button {
             switch group {
             case .light: session.filterEdit?.showsCameraRawLight.toggle()
             case .color: session.filterEdit?.showsCameraRawColor.toggle()
@@ -320,8 +321,8 @@ struct CameraRawControls: View {
             Image(systemName: shown ? "eye" : "eye.slash")
         }
         .buttonStyle(.borderless)
-        .help(shown ? "Hide \(name) in the preview" : "Show \(name) in the preview")
-        .accessibilityLabel(shown ? "Hide \(name)" : "Show \(name)")
+        .help(shown ? String(localized: "Hide \(name) in the preview") : String(localized: "Show \(name) in the preview"))
+        .accessibilityLabel(shown ? String(localized: "Hide \(name)") : String(localized: "Show \(name)"))
     }
 
     /// Puts an adjusted section back to its defaults.
@@ -331,14 +332,15 @@ struct CameraRawControls: View {
         }
         .buttonStyle(.borderless)
         .disabled(session.filterEdit?.committing == true)
-        .help("Reset \(group.rawValue) to its defaults")
-        .accessibilityLabel("Reset \(group.rawValue)")
+        .help(String(localized: "Reset \(group.localizedName) to its defaults"))
+        .accessibilityLabel(String(localized: "Reset \(group.localizedName)"))
     }
 
     private func slider(_ title: String, _ key: WritableKeyPath<CameraRawSettings, Double>, range: ClosedRange<Double>,
                         decimals: Int, clipping: CameraRawClipping?, track: CameraRawSliderTrack = .plain,
                         reset resetValue: Double = 0, help: String) -> some View {
         let step = pow(10, Double(decimals))
+        let title = String(localizedKey: title), help = String(localizedKey: help)
         return HStack(spacing: 10) {
             Text(title)
                 .frame(minWidth: Self.labelWidth, alignment: .leading)

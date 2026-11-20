@@ -362,7 +362,7 @@ extension EditorSession {
             if let transform = change.transform { layer.transform = transform }
             return layer
         }
-        beginEdit(toSixteenBit ? "Convert to 16-Bit" : "Convert to 8-Bit")
+        beginEdit(toSixteenBit ? String(localized: "Convert to 16-Bit") : String(localized: "Convert to 8-Bit"))
         self.document?.layers = layers
         // The one edit that makes a 16-bit layer 8-bit on purpose.
         convertsToEightBit = !toSixteenBit

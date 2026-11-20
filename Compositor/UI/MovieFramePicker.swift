@@ -75,12 +75,12 @@ struct MovieTimeline: View {
             Button { togglePlayback() } label: {
                 controlIcon(observer == nil ? "play.fill" : "pause.fill")
             }
-            .accessibilityLabel(observer == nil ? "Play" : "Pause")
+            .accessibilityLabel(observer == nil ? String(localized: "Play") : String(localized: "Pause"))
             Button { muted.toggle() } label: {
                 controlIcon(muted ? "speaker.slash.fill" : "speaker.wave.2.fill")
             }
-                .accessibilityLabel(muted ? "Unmute movie" : "Mute movie")
-                .help(muted ? "Unmute movie" : "Mute movie")
+                .accessibilityLabel(muted ? String(localized: "Unmute movie") : String(localized: "Mute movie"))
+                .help(muted ? String(localized: "Unmute movie") : String(localized: "Mute movie"))
             AppSlider(value: Binding(get: { requested ?? link.seconds }, set: { if dragging { scrub($0) } else { seek($0) } }),
                       in: 0...link.duration, onEditingChanged: { editing in
                 if editing { job?.cancel(); job = nil; stopPlayback() }
@@ -235,7 +235,7 @@ struct MovieTimeline: View {
                 player.play()
             } catch {
                 guard !Task.isCancelled else { return }
-                failure = "Movie unavailable. Right-click the timeline to relink and play."
+                failure = String(localized: "Movie unavailable. Right-click the timeline to relink and play.")
             }
             job = nil
         }
@@ -275,7 +275,7 @@ struct MovieTimeline: View {
                     if requested == target { break }
                 }
             } catch {
-                if !Task.isCancelled { failure = "Movie unavailable. Right-click the timeline to relink and scrub." }
+                if !Task.isCancelled { failure = String(localized: "Movie unavailable. Right-click the timeline to relink and scrub.") }
             }
             if !Task.isCancelled { scrubJob = nil }
         }
@@ -299,7 +299,7 @@ struct MovieTimeline: View {
                 try Task.checkCancellation()
                 guard session.activeLayerID == layer.id, let index = session.document?.layers.firstIndex(where: { $0.id == layer.id }) else { return }
                 failure = nil
-                session.beginEdit("Select Movie Frame")
+                session.beginEdit(String(localized: "Select Movie Frame"))
                 session.document?.layers[index].asset = frame
                 session.document?.layers[index].movie?.seconds = min(link.duration, max(0, (time - range.start).seconds))
                 session.endEdit()
@@ -309,7 +309,7 @@ struct MovieTimeline: View {
             } catch {
                 guard !Task.isCancelled else { return }
                 if keepFrame { stopPlayback() }
-                failure = "Movie unavailable. Right-click the timeline to relink and scrub."
+                failure = String(localized: "Movie unavailable. Right-click the timeline to relink and scrub.")
                 requested = nil
                 session.moviePreview = nil
             }
@@ -333,7 +333,7 @@ struct MovieTimeline: View {
         still.name = "\(layer.name) · \(Duration.seconds(link.seconds).formatted(.time(pattern: .minuteSecond(padMinuteToLength: 1, fractionalSecondsLength: 2))))"
         still.transform = layer.transform
         still.parentID = layer.parentID
-        session.beginEdit("Grab Movie Frame")
+        session.beginEdit(String(localized: "Grab Movie Frame"))
         session.document?.layers.insert(still, at: index + 1)
         session.endEdit()
     }
@@ -352,7 +352,7 @@ struct MovieTimeline: View {
                 let (replacement, frame) = try await MovieFramePicker.open(url, remainingPixels: DocumentLimits.documentPixelBudget)
                 guard !Task.isCancelled, let index = session.document?.layers.firstIndex(where: { $0.id == layer.id }) else { return }
                 releaseSource()
-                session.beginEdit("Relink Movie")
+                session.beginEdit(String(localized: "Relink Movie"))
                 session.document?.layers[index].movie = replacement
                 session.document?.layers[index].asset = frame
                 session.endEdit()

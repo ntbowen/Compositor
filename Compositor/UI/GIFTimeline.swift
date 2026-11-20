@@ -67,8 +67,8 @@ struct GIFTimeline: View {
                     .frame(width: 20, height: 18)
             }
             .disabled(!canPlay || requestedFrame != nil)
-            .help(isPlaying ? "Pause" : "Play")
-            .accessibilityLabel(isPlaying ? "Pause" : "Play")
+            .help(isPlaying ? String(localized: "Pause") : String(localized: "Play"))
+            .accessibilityLabel(isPlaying ? String(localized: "Pause") : String(localized: "Play"))
 
             Menu { delayMenu } label: {
                 Text(timing.mode == .uniform ? "\(Int(delay.rounded())) ms" : originalDelays())
